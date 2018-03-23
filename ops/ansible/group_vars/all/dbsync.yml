@@ -1,0 +1,8 @@
+# These settings are for dbpull and dbpush playbooks
+
+db_dumpfile: "{{ app_identifier }}_{{ env }}_{{ timestamp }}.sql"
+db_path: "~/dbdumps"
+
+# db dump cleanup
+db_dump_cleanup: yes
+db_delete_after: 1w

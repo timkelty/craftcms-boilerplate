@@ -1,0 +1,13 @@
+---
+- name: uncompress the database dump
+  shell: "gunzip {{ db_path }}/{{ db_dumpfile }}.gz"
+    
+- name: "import database"
+  mysql_db:
+    state: import
+    name: "{{ mysql_database }}"
+    login_host: 127.0.0.1
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_password }}"
+    login_port: "{{ mysql_port }}"
+    target: "{{ db_path }}/{{ db_dumpfile }}"

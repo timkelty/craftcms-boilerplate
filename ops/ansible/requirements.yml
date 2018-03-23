@@ -1,0 +1,24 @@
+- name: ufw
+  src: franklinkim.ufw
+  version: 1.6.0
+
+- name: fail2ban
+  src: tersmitten.fail2ban
+
+- name: ssh-hardening
+  src: dev-sec.ssh-hardening
+  version: 4.4.0
+
+- name: ansible-tarsnap
+  src: pmbauer.tarsnap
+
+- name: docker
+  src: geerlingguy.docker
+  version: 2.1.0
+
+- name: pip
+  src: geerlingguy.pip
+  version: 1.2.0
+
+- name: gitlab-runner
+  src: riemers.gitlab-runner

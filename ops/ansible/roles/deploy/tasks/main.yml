@@ -1,0 +1,39 @@
+---
+
+- name: copy .vault_pass
+  copy:
+    src: .vault_pass
+    dest: "{{ app_base_path }}/.vault_pass"
+
+- name: ensure frontend docker network
+  shell: docker network create frontend || true
+
+- name: ensure traefik container
+  docker_container:
+    name: traefik
+    state: started
+    image: traefik:1.5
+    restart_policy: always
+    networks:
+      - name: frontend
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "{{ app_base_path }}/traefik.toml:/etc/traefik/traefik.toml:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "{{ app_base_path}}/acme:/etc/traefik/acme"
+
+- name: put deployment script into place
+  template:
+    src: deploy.sh.j2
+    dest: "{{ deployment_script }}"
+    mode: 0775
+
+- name: execute the deployment script
+  shell: "{{ deployment_script }}"
+  environment:
+    GITREF: "{{ gitref }}"
+  args:
+    chdir: "{{ app_base_path }}"

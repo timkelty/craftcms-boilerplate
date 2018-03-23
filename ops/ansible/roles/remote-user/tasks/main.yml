@@ -1,0 +1,14 @@
+---
+- name: Attempt to connect as root user (may fail)
+  local_action: command ansible {{ inventory_hostname }} -m ping -u root
+  changed_when: false
+  ignore_errors: yes
+  register: root_status
+
+- name: Set remote user for each host
+  set_fact:
+    ansible_ssh_user: "{{ root_status | success | ternary('root', admin_user) }}"
+
+- name: Announce which user was selected
+  debug:
+    msg: "Note: Ansible will attempt connections as user = {{ ansible_ssh_user }}"

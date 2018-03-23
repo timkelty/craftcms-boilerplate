@@ -1,0 +1,7 @@
+# Nginx settings. You probably don't want to change these.
+client_max_body_size: 50m
+fastcgi_buffers: 16 16k
+fastcgi_buffer_size: 32k
+fastcgi_pass_host: app
+fastcgi_pass_port: 9000
+server_name: localhost

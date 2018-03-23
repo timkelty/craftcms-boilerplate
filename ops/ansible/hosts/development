@@ -1,0 +1,12 @@
+# Replace address with YOUR development server
+development.foo.com ansible_host=10.10.0.5
+development.local ansible_host=127.0.0.1 ansible_connection=local
+[development]
+development.foo.com
+development.local
+
+[server]
+development.foo.com
+
+[docker]
+development.local

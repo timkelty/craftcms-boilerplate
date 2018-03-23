@@ -1,0 +1,46 @@
+---
+- import_playbook: variable-check.yml
+  vars:
+    playbook: server.yml
+
+- name: Determine Remote User
+  hosts: server:&{{ env }}
+  gather_facts: no
+  roles:
+    - { role: remote-user, tags: [remote-user, always] }
+
+- name: Server with Docker and gitlab-runner
+  hosts: server:&{{ env }}
+  become: yes
+  vars_files:
+    - vars/sudoer_passwords.yml
+  roles:
+    - { role: common, tags: [common] }
+    - { role: pip, tags: [pip] }
+    - { role: fail2ban, tags: [fail2ban] }
+    - { role: ssh-hardening, tags: [ssh] }
+    - { role: ufw, tags: [ufw] }
+    - { role: ansible-tarsnap, tags: [backups] }
+    - { role: tarsnap-keys, tags: [backups] }
+    - { role: docker, tags: [docker] }
+    - { role: users, tags: [users] }
+    - { role: gitlab-runner, tags: [gitlab-runner] }
+    - { role: docker-app, tags: [docker-app] }
+    - { role: user-tweaks, tags: [user-tweaks] }
+    - { role: mysql-dump, tags: [mysql-dump] }
+
+- name: runner setup
+  hosts: runner
+  tasks:
+    - name: ensure vault_pass dir with the correct perms
+      file:
+        path: /var/vault_pass
+        state: directory
+        mode: 0700
+        owner: gitlab-runner
+
+    - name: copy vault pass to runner
+      copy:
+        src: .vault_pass
+        dest: "/var/vault_pass/.{{ app_identifier }}_vault_pass"
+        owner: gitlab-runner

@@ -1,0 +1,7 @@
+# See https://github.com/riemers/ansible-gitlab-runner
+gitlab_runner_registration_token: "{{ lookup('env','GITLAB_RUNNER_REGISTRATION_TOKEN') }}"
+gitlab_runner_description: '{{ app_identifier }} GitLab Runner'
+gitlab_runner_coordinator_url: https://gitlab.fusionary.com/
+gitlab_runner_uid: 1111
+gitlab_runner_tags:
+  - deploy

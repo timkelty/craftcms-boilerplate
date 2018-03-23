@@ -1,0 +1,44 @@
+; -------------------------------------
+; Docker PHP configuration
+; -------------------------------------
+
+; this file will overwrite default php.ini settings
+
+display_errors = {{ display_errors }}
+log_errors =  {{ log_errors }}
+
+short_open_tag    = {{ short_open_tag }}
+variables_order   = {{ variables_order }}
+request_order     = {{ request_order }}
+
+allow_url_fopen   = {{ allow_url_fopen }}
+allow_url_include = {{ allow_url_include }}
+
+memory_limit        = {{ memory_limit }}
+max_execution_time  =  {{ max_execution_time }}
+max_input_time      =  {{ max_input_time }}
+post_max_size       =  {{ post_max_size }}
+upload_max_filesize =  {{ upload_max_filesize }}
+max_input_vars      =  {{ max_input_vars }}
+
+expose_php          =  {{ expose_php }}
+
+date.timezone =  {{ date_timezone }}
+
+mysql.default_host =  {{ mysql_default_host }}
+mysqli.default_host =  {{ mysqli_default_host }}
+
+opcache.memory_consumption =  {{ opcache_memory_consumption }}
+opcache.interned_strings_buffer = {{ opcache_interned_strings_buffer }}
+opcache.max_accelerated_files =  {{ opcache_max_accelerated_files }}
+opcache.fast_shutdown = {{ opcache_fast_shutdown }}
+opcache.validate_timestamps =  {{ opcache_validate_timestamps }}
+opcache.revalidate_freq =  {{ opcache_revalidate_freq }}
+xdebug.remote_enable = {{ xdebug_remote_enable }}
+xdebug.remote_connect_back =  {{ xdebug_remote_connect_back }}
+xdebug.idekey =  {{ xdebug_idekey }}
+xdebug.cli_color =  {{ xdebug_cli_color }}
+xdebug.max_nesting_level =  {{ xdebug_max_nesting_level }}
+xdebug.profiler_enable_trigger = {{ xdebug_profiler_enable_trigger }}
+xdebug.profiler_output_dir =  {{ xdebug_profiler_output_dir }}
+xdebug.output_dir =  {{ xdebug_output_dir }}

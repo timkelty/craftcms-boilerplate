@@ -1,0 +1,4 @@
+User-agent: *
+{% if not craft.app.config.general.allowIndexing -%}
+  Disallow: /
+{%- endif %}

@@ -1,0 +1,32 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "$(npm bin)/neutrino start",
+    "lint": "$(npm bin)/neutrino lint",
+    "build": "$(npm bin)/neutrino build",
+    "build-dev": "$(npm bin)/neutrino build --options.env.NODE_ENV=development",
+    "test": "$(npm bin)/neutrino test",
+    "vault": "ansible-vault --vault-password-file ops/ansible/.vault_pass",
+    "provision": "./ops/ansible/bin/provision.sh",
+    "db": "./ops/ansible/bin/db.sh",
+    "docker-compose": "docker-compose --file='./ops/docker/docker-compose.yml'",
+    "up": "yarn docker-compose up -d",
+    "down": "yarn docker-compose down",
+    "craft": "yarn docker-compose exec app bin/craft"
+  },
+  "devDependencies": {
+    "@fusionary/eslint-config": "^2.2.0",
+    "@fusionary/postcss-config": "^2.1.1",
+    "@fusionary/stylelint-config": "^2.2.0",
+    "@neutrinojs/eslint": "^8.1.2",
+    "@neutrinojs/stylelint": "^8.1.2",
+    "@neutrinojs/web": "^8.1.2",
+    "browserslist": "^3.1.2",
+    "deepmerge": "^2.1.0",
+    "dotenv": "^5.0.1",
+    "expose-loader": "^0.7.5",
+    "jquery": "^3.3.1",
+    "neutrino": "^8.1.2",
+    "postcss-loader": "^2.1.1"
+  }
+}

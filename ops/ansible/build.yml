@@ -1,0 +1,23 @@
+---
+- import_playbook: variable-check.yml
+  vars:
+    playbook: build.yml
+
+- name: Build docker images
+  hosts: docker:&{{ env }}
+  gather_facts: no
+  pre_tasks:
+    - name : expand local path
+      shell: "cd {{ local_path }} 2> /dev/null && pwd -P"
+      register: expand_local_path_output
+
+    - name: Set absolute_local_path fact
+      set_fact: "absolute_local_path={{ expand_local_path_output.stdout }}"
+  roles:
+    - build
+
+- name: runner post-setup
+  hosts: runner
+  tasks:
+    - name: remove vault pass from runner
+      file: path="/tmp/.{{ app_identifier }}_vault_pass" state=absent

@@ -1,0 +1,45 @@
+---
+# TODO: This is WIP (Not working yet).
+# We need to figure out how to get a path into a named volume,
+# then rsync those files to and from that path with the proper
+# permissions.
+
+- import_playbook: variable-check.yml
+  vars:
+    playbook: server.yml
+
+- name: Determine Remote User
+  hosts: server:&{{ env }}
+  gather_facts: no
+  roles:
+    - { role: remote-user, tags: [remote-user, always] }
+
+
+- name: sync assets
+  hosts: server:& {{ env }}
+  pre_tasks:
+    # TODO register remote_asset_path based on
+    # `docker inspect` command for the mounted app asset
+    # volume
+    - name: register local asset src
+      set_fact: "asset_src={{ local_asset_path }}"
+      when: op == "push"
+
+    - name: register remote asset src
+      set_fact: "asset_src={{ remote_asset_path }}"
+      when: op == "pull"
+
+    - name: register local asset dest
+      set_fact: "asset_dest={{ local_asset_path }}"
+      when: op == "pull"
+
+    - name: register remote asset dest
+      set_fact: "asset_dest={{ remote_asset_path }}"
+      when: op == "push"
+
+  tasks:
+    - name: run rsync
+      synchronize:
+        mode: "{{ op }}"
+        src: "{{ asset_src }}"
+        dest: "{{ asset_dest }}"

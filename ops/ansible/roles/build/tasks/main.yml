@@ -1,0 +1,56 @@
+- name: set up .dockerignore
+  copy: src=dockerignore dest="{{ local_path }}/.dockerignore"
+
+- name: set up php Dockerfile
+  copy: src=Dockerfile.php dest="{{ local_path }}/Dockerfile"
+
+- name: set up php.ini
+  template: src=php.ini.j2 dest="{{ local_path }}/php.ini"
+
+- name: pull the workspace docker image
+  docker_image:
+    name: "{{ workspace_image_name }}"
+    force: yes
+
+- name: set up node modules volume
+  command: docker volume create "{{ node_modules_volume_name }}_{{ env }}"
+
+- name: ensure node modules volume permissions
+  docker_container:
+    name: "{{ workspace_container_name }}"
+    image: "{{ workspace_image_name }}"
+    user: "{{ gitlab_runner_uid }}"
+    volumes:
+      - "{{ node_modules_volume_name }}_{{ env }}:/app/node_modules"
+    command: "chown -R {{ gitlab_runner_uid }} /app/node_modules"
+
+- name: yarn install
+  docker_container:
+    name: "{{ workspace_container_name }}"
+    image: "{{ workspace_image_name }}"
+    user: "{{ gitlab_runner_uid }}"
+    volumes:
+      - "{{ absolute_local_path }}:/app"
+      - "{{ node_modules_volume_name }}:/app/node_modules"
+    command: yarn install
+
+- name: yarn build
+  docker_container:
+    name: "{{ workspace_container_name }}"
+    image: "{{ workspace_image_name }}"
+    user: "{{ gitlab_runner_uid }}"
+    volumes:
+      - "{{ absolute_local_path }}:/app"
+      - "{{ node_modules_volume_name }}:/app/node_modules"
+    command: yarn build
+
+- name: build the app image (with assets)
+  docker_image:
+    name: "{{ gitlab_registry_url }}"
+    path: "{{ absolute_local_path }}"
+    buildargs:
+      UID: "{{ gitlab_runner_uid }}"
+    force: yes
+    nocache: yes
+    tag: "{{ gitref }}"
+    push: yes

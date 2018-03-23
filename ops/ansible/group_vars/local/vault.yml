@@ -1,0 +1,4 @@
+# Don't encrypt this, it's only for local dev.
+vault_mysql_password: secret
+vault_mysql_root_password: sosecretithurts
+vault_craft_security_key: dev-key-only

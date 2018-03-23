@@ -1,0 +1,11 @@
+# The env file for the app
+# (can't be in "all" because local uses a different path)
+env_file: "{{ app_base_path }}/{{ env }}.env"
+
+# This is your public facing mysql port
+mysql_port: 3309
+
+# This is to tell traefik what public facing
+# domain names that you have for your site.
+# multiple names should be comma separated.
+server_names: yourapp.fusionarydev.com

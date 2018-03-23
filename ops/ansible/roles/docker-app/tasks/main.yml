@@ -1,0 +1,50 @@
+---
+
+- name: ensure the app base directory
+  file:
+    path: "{{ app_base_path }}"
+    state: directory
+    mode: 0775
+    group: docker
+
+- name: ensure the traefik ACME directory
+  file:
+    path: "{{ app_base_path }}/acme"
+    state: directory
+    mode: 0775
+    group: docker
+
+- name: create traefik configuration
+  template:
+    src: traefik.toml.j2
+    dest: "{{ app_base_path }}/traefik.toml"
+    mode: 0640
+    group: docker
+
+- name: copy the vault pass to the base dir
+  copy:
+    src: .vault_pass
+    dest: "{{ app_base_path }}/.vault_pass"
+    group: docker
+    mode: 0640
+
+- name: copy the mysql config to the base dir
+  copy:
+    src: mysql.conf.d
+    dest: "{{ app_base_path }}/"
+    group: docker
+    mode: 0640
+
+- name: create the app env file
+  template: src=app.env.j2 dest="{{ env_file }}" mode=0640 group=docker
+
+- name: create the nginx vhost file for app containers a and b
+  template:
+    src: vhost.conf.j2
+    dest: "{{ app_base_path }}/vhost-{{ env }}-{{ item }}.conf"
+  with_items:
+    - a
+    - b
+
+- name: create the docker-compose file
+  template: src=docker-compose.yml.j2 dest="{{ compose_file }}" mode=0640 group=docker

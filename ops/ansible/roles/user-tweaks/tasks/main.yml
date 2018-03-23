@@ -1,0 +1,7 @@
+---
+
+- name: modify gitlab-runner uid
+  user:
+    name: gitlab-runner
+    uid: "{{ gitlab_runner_uid }}"
+    groups: gitlab-runner,docker

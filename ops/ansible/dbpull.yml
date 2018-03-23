@@ -1,0 +1,36 @@
+---
+# The vars registered here can be accessed like:
+# hostvars[127.0.0.1]['varname']
+- name: set local vars to be shared across plays
+  gather_facts: no
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: set a base timestamp
+      command: date +%Y%m%d-%H%M%S
+      register: timestamp_cmd
+
+- name: "sync {{ env }} DB to localhost"
+  gather_facts: no
+  hosts: server:&{{ env }}
+  become: no
+  remote_user: "{{ admin_user }}"
+  pre_tasks:
+    - name: set the timestamp
+      set_fact: "timestamp={{ hostvars['127.0.0.1'].timestamp_cmd.stdout }}"
+  vars:
+    - db_op: "pull"
+  roles:
+    - dbdump
+    - dbsync
+    - dbclean
+
+- name: "load db dump from {{ env }} into local database"
+  gather_facts: no
+  hosts: local
+  pre_tasks:
+    - name: set the timestamp
+      set_fact: "timestamp={{ hostvars['127.0.0.1'].timestamp_cmd.stdout }}"
+  roles:
+    - dbload
+    - dbclean

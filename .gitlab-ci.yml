@@ -1,0 +1,61 @@
+stages:
+  - build
+  - deploy
+
+build_production:
+  stage: build
+  script:
+    - echo "build app for production"
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cd ops/ansible
+    - cp /var/vault_pass/.craftcms_boilerplate_vault_pass .vault_pass
+    - ansible-playbook -l production.local -e "env=production" build.yml
+  tags:
+    - build
+  only:
+    - master
+
+build_development:
+  stage: build
+  script:
+    - echo "build app for development"
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cd ops/ansible
+    - cp /var/vault_pass/.craftcms_boilerplate_vault_pass .vault_pass
+    - ansible-playbook -l development.local -e "env=development" build.yml
+  tags:
+    - build
+  only:
+    - development
+
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Deploy app to production"
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cd ops/ansible
+    - cp /var/apps/craftcms_boilerplate/.vault_pass .vault_pass
+    - ansible-playbook -l production.local -e "env=production" deploy.yml
+  environment:
+    name: production
+    url: https://prod.example.com
+  tags:
+    - deploy
+  only:
+    - master
+
+deploy_development:
+  stage: deploy
+  script:
+    - echo "Deploy app to development"
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cd ops/ansible
+    - cp /var/apps/craftcms_boilerplate/.vault_pass .vault_pass
+    - ansible-playbook -l development.local -e "env=development" deploy.yml
+  environment:
+    name: development
+    url: https://development.example.com
+  tags:
+    - deploy
+  only:
+    - development

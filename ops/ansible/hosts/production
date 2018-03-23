@@ -1,0 +1,13 @@
+# Replace address with YOUR production server
+unknown.fusionary.com ansible_host=192.168.50.6
+production.local ansible_host=127.0.0.1 ansible_connection=local
+
+[production]
+unknown.fusionary.com
+production.local
+
+[server]
+unknown.fusionary.com
+
+[docker]
+production.local

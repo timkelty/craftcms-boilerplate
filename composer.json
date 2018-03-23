@@ -1,0 +1,41 @@
+{
+  "name": "fusionary/craftcms-boilerplate",
+  "description": "Craft CMS Boilerplate",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "project"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/timkelty/craftcms-boilerplate",
+  "type": "project",
+  "require": {
+    "php": ">=7.1.0",
+    "craftcms/cms": "^3.0.0-RC14",
+    "fusionary/craftcms-bootstrap": "^1.14.0",
+    "craftcms/redactor": "^1.0",
+    "clubstudioltd/craft-asset-rev": "^6.0",
+    "charliedev/element-map": "^1.0",
+    "craftcms/mailgun": "^1.2",
+    "craftcms/aws-s3": "^1.0",
+    "mmikkel/cp-field-inspect": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "modules\\": "src/php/modules"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "vendor-dir": "vendor/composer"
+  },
+  "scripts": {
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ],
+    "post-create-project-cmd": [
+      "@composer dump-autoload -o"
+    ]
+  }
+}

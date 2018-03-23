@@ -1,0 +1,17 @@
+---
+# Also define 'vault_sudoer_passwords' (`group_vars/development/vault.yml`, `group_vars/production/vault.yml`...)
+users:
+  - name: "{{ admin_user }}"
+    groups:
+      - sudo
+      - docker
+    keys:
+      - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      - https://github.com/jstewart.keys
+      - https://gitlab.fusionary.com/jstewart.keys
+      - https://gitlab.fusionary.com/jackbaty.keys
+      - https://gitlab.fusionary.com/timkelty.keys
+      - https://gitlab.fusionary.com/kswedberg.keys
+      - https://gitlab.fusionary.com/rmcfadden.keys
+
+admin_user: fusionary

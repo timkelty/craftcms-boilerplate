@@ -1,0 +1,25 @@
+docker_path: "../docker/{{ app_identifier }}"
+env_file: ../../.env
+
+nginx_port: 8089
+nginx_ssl_port: 4443
+app_ports:
+  - "{{ nginx_port }}:80"
+  - "{{ nginx_ssl_port }}:443"
+
+blackfire_client_id: ""
+blackfire_client_token: ""
+
+# The exposed MySQL port that you will use to connect with cli or Sequel Pro
+# This should be different for each project, as you'll use 127.0.0.1 as the host
+# and the port number for the all to connect
+mysql_port: 3308
+
+# These variables are responsible for your .gitlab-ci generation.
+# don't touch them unless you're aware that you may break the remote site.
+gitlab_ci_prod_url: "https://prod.example.com"
+gitlab_ci_dev_url: "https://development.example.com"
+
+
+# php settings are in php.yml.
+# nginx settings are in nginx.yml

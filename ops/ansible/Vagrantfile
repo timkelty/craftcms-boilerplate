@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+ip = '192.168.50.6' # pick any local IP
+cpus = 1
+memory = 1024 # in MB
+
+def fail_with_message(msg)
+  fail Vagrant::Errors::VagrantError.new, msg
+end
+
+Vagrant.require_version '>= 1.5.1'
+
+Vagrant.configure('2') do |config|
+  config.vm.box = 'bento/ubuntu-16.04'
+  config.ssh.forward_agent = true
+
+  # Fix for: "stdin: is not a tty"
+  # https://github.com/mitchellh/vagrant/issues/1673#issuecomment-28288042
+  config.ssh.shell = %{bash -c 'BASH_ENV=/etc/profile exec bash'}
+
+  # Required for NFS to work
+  config.vm.network :private_network, ip: ip, hostsupdater: 'skip'
+
+  hostname = "vagrant.fusionarydev.com"
+
+  config.vm.hostname = hostname
+
+  if Vagrant.has_plugin? 'vagrant-hostmanager'
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+  else
+    fail_with_message "vagrant-hostmanager missing, please install the plugin with this command:\nvagrant plugin install vagrant-hostmanager"
+  end
+
+  # Virtualbox settings
+  config.vm.provider 'virtualbox' do |vb|
+    vb.name = config.vm.hostname
+    vb.customize ['modifyvm', :id, '--cpus', cpus]
+    vb.customize ['modifyvm', :id, '--memory', memory]
+
+    # Fix for slow external network connections
+    vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+    vb.customize ['modifyvm', :id, '--natdnsproxy1', 'on']
+  end
+end

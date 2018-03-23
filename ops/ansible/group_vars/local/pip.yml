@@ -1,0 +1,4 @@
+# This is overridden from "all" group vars because
+# we don't need the same packages as we would on prod and dev.
+pip_install_packages:
+  - docker<3.0

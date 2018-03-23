@@ -1,0 +1,25 @@
+---
+- name: find uncompressed database dumps
+  find:
+    paths: "{{ db_path }}"
+    patterns: '*.sql'
+  register: uncompressed_db
+  when: db_dump_cleanup
+
+- name: delete uncompressed database dumps
+  file: path={{ item.path }} state=absent
+  with_items: "{{ uncompressed_db.files }}"
+  when: db_dump_cleanup
+
+- name: find old database dumps
+  find:
+    paths: "{{ db_path }}"
+    patterns: '*.sql,*.sql.gz'
+    age: "{{ db_delete_after }}"
+  register: old_db
+  when: db_dump_cleanup
+
+- name: delete old database dumps
+  file: path={{ item.path }} state=absent
+  with_items: "{{ old_db.files }}" 
+  when: db_dump_cleanup

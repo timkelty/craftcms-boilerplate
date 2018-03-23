@@ -1,0 +1,5 @@
+/.vault_pass
+*.retry
+/vendor
+/.vagrant
+.DS_Store

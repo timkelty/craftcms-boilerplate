@@ -1,0 +1,3 @@
+---
+- name: set up gitlab-ci.yml
+  template: src=gitlab-ci.yml.j2 dest={{ local_path }}/.gitlab-ci.yml

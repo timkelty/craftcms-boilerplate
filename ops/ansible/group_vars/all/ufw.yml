@@ -1,0 +1,15 @@
+# ufw (firewall) role.
+
+ufw_rules:
+  - { port: 80, rule: allow }
+  - { port: 443, rule: allow }
+  - { port: 22, rule: allow }
+  - { from_ip: '52.144.33.220', rule: allow }
+  - { from_ip: '192.168.0.0/16', rule: allow }
+ufw_default_forward_policy: ACCEPT
+ufw_logging: full
+fail2ban_services:
+  - name: sshd
+    port: 22
+    maxretry: 5
+    bantime: 600

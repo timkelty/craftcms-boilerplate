@@ -1,0 +1,18 @@
+# variables should be snake_case
+# so that we can use it for things like docker containers and such
+
+app_identifier: "craftcms_boilerplate"
+local_path: ../.. # path targeting local craft directory (relative to Ansible root)
+local_asset_path: "{{ local_path }}/public/assets"
+craft_environment: "{{ env }}"
+craft_security_key: "{{ vault_craft_security_key }}"
+
+mysql_version: 5.7
+mysql_user: "{{ app_identifier }}"
+mysql_password: "{{ vault_mysql_password }}"
+mysql_root_password: "{{ vault_mysql_root_password }}"
+mysql_database: "{{ app_identifier }}_{{ env }}"
+
+# This can be found on the "registry" settings in the gitlab
+# repo for this project.
+gitlab_registry_url: "gitlab.fusionary.com:4567/fusionary/craftcms/boilerplate"

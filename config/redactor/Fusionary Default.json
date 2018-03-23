@@ -1,0 +1,16 @@
+{
+	"structure": true,
+	"buttons": [
+		"format",
+		"bold",
+		"italic",
+		"lists",
+		"link",
+		"file",
+		"image"
+	],
+	"plugins": [
+		"source",
+		"fullscreen"
+	]
+}

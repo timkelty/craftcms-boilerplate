@@ -1,0 +1,36 @@
+#!/bin/bash -eux
+
+docker-compose -f docker-compose-{{ env }}.yml pull
+
+# ensure that all services are running
+docker-compose -f docker-compose-{{ env }}.yml up --no-recreate -d
+
+
+# Shut down Service A first, and restart with new image
+docker-compose -f docker-compose-{{ env }}.yml stop app_{{ env }}_a
+docker-compose -f docker-compose-{{ env }}.yml up -d --force-recreate app_{{ env }}_a
+docker-compose -f docker-compose-{{ env }}.yml stop nginx_{{ env }}_a
+docker-compose -f docker-compose-{{ env }}.yml up -d --force-recreate nginx_{{ env }}_a
+
+# Composer install
+docker-compose -f docker-compose-{{ env }}.yml run --rm utility chown {{ gitlab_runner_uid }} /composer
+docker-compose -f docker-compose-{{ env }}.yml exec -T app_{{ env }}_a composer install
+
+# docker-compose is idiotic about  changing permissions when mounting so we have to do this all over the place
+docker-compose -f docker-compose-{{ env }}.yml run --rm utility chown {{ gitlab_runner_uid }} /craft /app
+
+# Wait a little in case the service takes a bit to start
+sleep 5
+
+# Now shut down and restart Service B with new image.
+docker-compose -f docker-compose-{{ env }}.yml stop app_{{ env }}_b
+docker-compose -f docker-compose-{{ env }}.yml up -d --force-recreate app_{{ env }}_b
+docker-compose -f docker-compose-{{ env }}.yml stop nginx_{{ env }}_b
+docker-compose -f docker-compose-{{ env }}.yml up -d --force-recreate nginx_{{ env }}_b
+
+# queue listener
+docker-compose -f docker-compose-{{ env }}.yml stop queue_listener_{{ env }}
+docker-compose -f docker-compose-{{ env }}.yml up -d --force-recreate queue_listener_{{ env }}
+
+# docker-compose is idiotic about  changing permissions when mounting so we have to do this all over the place
+docker-compose -f docker-compose-{{ env }}.yml run --rm utility chown {{ gitlab_runner_uid }} /craft /app

@@ -1,0 +1,70 @@
+stages:
+  - build
+  - deploy
+
+build_production:
+  stage: build
+  script:
+    - echo "build app for production"
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cd ops/ansible
+    - cp /var/vault_pass/.{{ app_identifier }}_vault_pass .vault_pass
+    - ansible-playbook -l production.local -e "env=production gitref=$CI_COMMIT_REF_NAME" build.yml
+  tags:
+    - build
+  only:
+    - /^production-\d{14}$/
+  except:
+    - branches
+
+build_development:
+  stage: build
+  script:
+    - echo "build app for development"
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cd ops/ansible
+    - cp /var/vault_pass/.{{ app_identifier }}_vault_pass .vault_pass
+    - ansible-playbook -l development.local -e "env=development gitref=$CI_COMMIT_REF_NAME" build.yml
+  tags:
+    - build
+  only:
+    - /^development-\d{14}$/
+  except:
+    - branches
+
+
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Deploy app to production"
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cd ops/ansible
+    - cp {{ app_base_path }}/.vault_pass .vault_pass
+    - ansible-playbook -l production.local -e "env=production gitref=$CI_COMMIT_REF_NAME" deploy.yml
+  environment:
+    name: production
+    url: {{ gitlab_ci_prod_url }}
+  tags:
+    - deploy
+  only:
+    - /^production-\d{14}$/
+  except:
+    - branches
+
+deploy_development:
+  stage: deploy
+  script:
+    - echo "Deploy app to development"
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cd ops/ansible
+    - cp {{ app_base_path }}/.vault_pass .vault_pass
+    - ansible-playbook -l development.local -e "env=development gitref=$CI_COMMIT_REF_NAME" deploy.yml
+  environment:
+    name: development
+    url: {{ gitlab_ci_dev_url }}
+  tags:
+    - deploy
+  only:
+    - /^development-\d{14}$/
+  except:
+    - branches

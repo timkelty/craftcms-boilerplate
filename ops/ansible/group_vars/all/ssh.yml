@@ -1,0 +1,9 @@
+# https://galaxy.ansible.com/dev-sec/ssh-hardening/
+# This is for remote SSH.
+
+ssh_allow_root_with_key: yes
+sftp_enabled: true
+
+# This is 2 by default but we're running into major issues
+# for people with lots of keys in their SSH config.
+ssh_max_auth_retries: 5

@@ -1,0 +1,3 @@
+# Settings for the backup role (remote)
+tarsnap_tarsnapper_conf: "~/.tarsnap/tarsnapper.{{ app_identifier }}.{{ env }}.conf"
+local_tarsnap_key: "~/.tarsnap/tarsnap.{{ app_identifier }}.{{ env }}.key"

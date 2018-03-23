@@ -1,0 +1,6 @@
+---
+- name: deploy docker images
+  gather_facts: no
+  hosts: docker:&{{ env }}
+  roles:
+    - deploy

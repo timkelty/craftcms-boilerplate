@@ -1,0 +1,25 @@
+---
+- name: Local development environment with docker-compose
+  hosts: local
+  connection: local
+  pre_tasks:
+    # UID env var is not available within ansible for some reason.
+    - name: Register uid
+      shell: id -u
+      register: uid_output
+
+    - name: Set effective_uid fact
+      set_fact: "current_uid={{ uid_output.stdout }}"
+
+    - name: Register git email
+      shell: git config --get user.email
+      register: git_email_output
+
+    - name: Set craft_test_to_email fact
+      set_fact: "craft_test_to_email={{ git_email_output.stdout }}"
+
+  vars:
+    env: development
+  roles:
+    - { role: docker-compose, tags: [docker-compose] }
+    - { role: gitlab-ci, tags: [gitlab-ci] }

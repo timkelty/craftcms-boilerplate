@@ -1,0 +1,21 @@
+---
+- name: Upgrade packages
+  apt: update_cache=yes upgrade=dist
+
+- name: Install essentials
+  apt: name={{ item }} state=present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - libmysqlclient-dev
+    - mysql-client
+    - git-core
+    - ntp
+    - python-pip
+    - python-setuptools
+
+- name: Install ansible for gitlab-ci runner
+  pip:
+    name: ansible 

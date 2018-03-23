@@ -1,0 +1,30 @@
+# Don't touch these unless you know how to provision
+# a remote server.
+
+# Traefik
+redirect_http_to_https: false
+letsencrypt_email: jbaty@fusionary.com
+
+# docker-app role. remote config for docker containers
+app_base_path: "/var/apps/{{ app_identifier }}"
+deployment_script: "{{ app_base_path }}/deploy-{{ env }}.sh"
+compose_file: "{{ app_base_path }}/docker-compose-{{ env }}.yml"
+
+# build settings
+workspace_container_name: "{{ app_identifier }}_workspace"
+workspace_image_name: gitlab.fusionary.com:4567/fusionary/devops/dockerfiles/workspace
+node_modules_volume_name: "{{ app_identifier }}_node_modules"
+
+# Deployment settings
+mysql_database: "{{ app_identifier }}_{{ env }}"
+mysql_container_name: "{{ app_identifier }}_mysql_{{ env }}"
+mysql_conf_path: "{{ app_base_path }}/mysql.conf.d"
+
+# nginx: don't change these unless you really know what you're doing.
+# you will break the remote site.
+client_max_body_size: 50m
+fastcgi_buffers: 16 16k
+fastcgi_buffer_size: 32k
+fastcgi_pass_host: app_{{ env }}
+fastcgi_pass_port: 9000
+server_name: localhost

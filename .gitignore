@@ -1,0 +1,7 @@
+/.env
+/vendor/composer
+/node_modules
+/public/build
+/public/storage
+/ops/docker
+!*.sql

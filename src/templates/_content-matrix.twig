@@ -1,0 +1,14 @@
+{% set element = element ?? entry ?? category ?? null %}
+{% set fieldHandle = fieldHandle ?? 'contentMatrix' %}
+{% set fieldData = element[fieldHandle] ?? null %}
+
+{% if fieldData %}
+  {% for row in fieldData.all() %}
+    {% switch row.type %}
+      {% case 'richText' %}
+        <div>
+          {{ row.richText }}
+        </div>
+    {% endswitch %}
+  {% endfor %}
+{% endif %}

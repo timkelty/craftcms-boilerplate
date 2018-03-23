@@ -1,0 +1,14 @@
+---
+
+- name: ensure mysql dump dir
+  file:
+    path: /backup
+    state: directory
+    group: docker
+    mode: 0775
+
+- name: "put dump cron job into place for {{ env }}"
+  cron:
+    name: "mysqldump {{ env }}"
+    special_time: daily
+    job: "docker-compose -f {{ compose_file }} mysql_{{ env }} sh -c 'exec mysqldump --opt --all-databases -uroot -p\"$MYSQL_ROOT_PASSWORD\"' > /backup/mysqldump.{{ env }}.sql"

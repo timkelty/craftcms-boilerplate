@@ -1,0 +1,7 @@
+# The pip role allows us to install extra packages.
+# these are the packages that we need to install on local
+# and remote.
+pip_install_packages:
+  - ansible
+  - docker<3.0
+  - MySQL-python

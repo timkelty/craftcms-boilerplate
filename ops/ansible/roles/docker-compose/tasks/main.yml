@@ -1,0 +1,58 @@
+---
+
+- name: Ensure docker directory
+  file: path="{{ docker_path }}" state=directory
+
+- name: Ensure /node_modules is ignored in .dockerignore file
+  lineinfile:
+    path: "{{ local_path }}/.dockerignore"
+    state: present
+    create: yes
+    line: "/node_modules"
+
+- name: Set up app env file
+  template: src=app.env.j2 dest="{{ env_file }}"
+
+- name: Set up docker compose yaml file
+  template: src=docker-compose.yml.j2 dest="{{ docker_path }}/docker-compose.yml"
+
+- name: Set up .dockerignore
+  copy: src=dockerignore dest="{{ local_path }}/.dockerignore"
+
+- name: Set up the workspace dir
+  file: path="{{ docker_path }}/workspace" state=directory
+
+- name: Set up the workspace files
+  copy: src=files/workspace dest="{{ docker_path }}"
+
+- name: Set up the nginx dir
+  file: path="{{ docker_path }}/nginx" state=directory
+
+- name: Set up nginx files
+  copy: src=files/nginx dest="{{ docker_path }}"
+
+- name: Set up default vhost
+  template: src=vhost.conf.j2 dest="{{ docker_path }}/nginx/vhost.conf"
+
+- name: Set up the php dir
+  file: path="{{ docker_path }}/php" state=directory
+
+- name: Set up php.ini
+  template: src=php.ini.j2 dest="{{ docker_path }}/php/php.ini"
+
+- name: Set up php Dockerfile
+  copy: src=Dockerfile.php dest="{{ docker_path }}/php/Dockerfile"
+  
+- name: Set up the mysql config dir
+  file: path="{{ docker_path }}/mysql.conf.d" state=directory
+
+- name: Set up mysql
+  copy: src=files/mysql.conf.d dest="{{ docker_path }}/"
+
+- name: Set up mysql import dir
+  file: path="{{ docker_path }}/mysql-import" state=directory
+
+- name: Build containers
+  command: docker-compose build
+  args:
+    chdir: "{{ docker_path }}"

@@ -1,0 +1,13 @@
+---
+- name: "fetch dbdump from remote"
+  fetch:
+    src: "{{ db_path }}/{{ db_dumpfile }}.gz"
+    dest: "{{ db_path }}/{{ db_dumpfile }}.gz"
+    flat: yes
+  when: db_op == "pull"
+
+- name: "push dbdump to remote"
+  copy:
+    src: "{{ db_path }}/{{ db_dumpfile }}.gz"
+    dest: "{{ db_path }}"
+  when: db_op == "push"

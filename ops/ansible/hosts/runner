@@ -1,0 +1,4 @@
+runner.fusionary.com ansible_host=96.126.98.184 ansible_ssh_user=root
+
+[runner]
+runner.fusionary.com

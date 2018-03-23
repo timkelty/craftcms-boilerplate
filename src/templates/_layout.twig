@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {# Replace with a more robust solution (SEOMatic, etc.) #}
+  <title>{{ [entry.title ?? null, siteName]|filter|join(' | ') }}</title>
+
+  {%- if entry.url ?? null -%}
+    <link rel="canonical" href="{{ entry.url }}">
+  {%- endif %}
+
+  {# Styles are loaded via JS with devServer #}
+  {%- if not craft.app.config.general.devServerProxy -%}
+    <link rel="stylesheet" href="{{ url(rev('index.css')) }}">
+  {%- endif %}
+
+  {# Add tracking scripts #}
+  {%- if craft.app.config.general.allowTracking -%}
+  {%- endif %}
+
+  {{ general.htmlForHead|raw }}
+</head>
+<body>
+  {{ block('main') }}
+
+  {# Runtime/polyfills not built with devServer #}
+  {%- if not craft.app.config.general.devServerProxy -%}
+    <script src="{{ url(rev('runtime.js')) }}"></script>
+  {%- endif %}
+
+  <script src="{{ url(rev('index.js')) }}"></script>
+
+  {{ general.htmlForBody|raw }}
+</body>
+</html>

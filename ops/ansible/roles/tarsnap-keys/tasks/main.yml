@@ -1,0 +1,6 @@
+---
+- name: copy tarsnap key
+  copy:
+    src: "{{ local_tarsnap_key }}"
+    dest: "{{ tarsnap_keyfile }}"
+    mode: 0600

@@ -1,0 +1,35 @@
+php_version: 7.1
+
+display_errors: 1
+log_errors: 1
+
+short_open_tag:      Off
+variables_order:     'GPCS'
+request_order:       'GP'
+allow_url_fopen:     On
+allow_url_include:   Off
+memory_limit:        512M
+max_execution_time:  300
+max_input_time:      300
+post_max_size:       50M
+upload_max_filesize: 50M
+max_input_vars:      5000
+expose_php:          Off
+date_timezone:       UTC
+
+mysql_default_host:              mysql
+mysqli_default_host:             mysql
+opcache_memory_consumption:      256
+opcache_interned_strings_buffer: 16
+opcache_max_accelerated_files:   7963
+opcache_fast_shutdown:           1
+opcache_validate_timestamps:     1
+opcache_revalidate_freq:         0
+xdebug_remote_enable:            1
+xdebug_remote_connect_back:      1
+xdebug_idekey:                  docker
+xdebug_cli_color:               1
+xdebug_max_nesting_level:       1000
+xdebug_profiler_enable_trigger: 1000
+xdebug_profiler_output_dir:     /tmp/debug
+xdebug_output_dir:              /tmp/debug

@@ -1,0 +1,18 @@
+# This playbook solely exists to test remote provisioning with
+# vagrant. 
+
+# Note that the gitlab-runner and tarsnap roles are missing here
+# as we don't want to register services in our tests
+# Also, users is missing because we are using the "vagrant" user here.
+---
+- name: Test Server with Docker and gitlab-runner
+  hosts: test
+  become: yes
+  roles:
+    - { role: common, tags: [common] }
+    - { role: pip, tags: [pip] }
+    - { role: fail2ban, tags: [fail2ban] }
+    - { role: ssh-hardening, tags: [ssh] }
+    - { role: ufw, tags: [ufw] }
+    - { role: docker, tags: [docker] }
+    - { role: docker-app, tags: [docker-app] }
